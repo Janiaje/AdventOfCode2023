@@ -1,1 +1,0 @@
-../../dockerfiles/kotlin/Dockerfile
