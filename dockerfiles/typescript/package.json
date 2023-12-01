@@ -1,0 +1,10 @@
+{
+  "name": "typescript-app",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "tsc && node dist/Solution.js"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.0"
+  }
+}
