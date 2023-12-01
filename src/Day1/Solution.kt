@@ -1,10 +1,8 @@
-package day1
-
 import java.io.File
 
-object Day1 {
+object Solution {
 
-    private val inputFile = File("src/day1/input.txt")
+    private val inputFile = File("input.txt")
 
     private val firstDigitRegex = "^\\D*?(?<first>\\d)".toRegex()
     private val lastDigitRegex = "(?<last>\\d)\\D*$".toRegex()
@@ -50,5 +48,5 @@ object Day1 {
 }
 
 fun main() {
-    Day1.compute()
+    Solution.compute()
 }
