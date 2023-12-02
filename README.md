@@ -1,4 +1,4 @@
-# [Advent of Code 2024](https://adventofcode.com/2023/leaderboard/private/view/132354)
+# [Advent of Code 2023](https://adventofcode.com/2023/leaderboard/private/view/132354)
 
 This project contains my solutions for the Advent of Code 2024 challenge.
 
