@@ -12,8 +12,8 @@ object Solution {
         .toRegex()
 
     fun compute() {
-        println("The part one results are ${part1()}")
-        println("The part two results are ${part2()}")
+        println("Part 1 => ${part1()}")
+        println("Part 2 => ${part2()}")
     }
 
     private fun part1() = inputFile
