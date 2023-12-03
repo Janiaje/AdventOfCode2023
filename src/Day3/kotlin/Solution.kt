@@ -28,7 +28,7 @@ object Solution {
 
     private val numberRegex = "\\b(?<number>\\d+)\\b".toRegex()
 
-    private fun part1(): Int = text
+    private fun part1() = text
         .mapIndexed { lineIndex, line ->
             numberRegex.findAll(line)
                 .sumOf {
