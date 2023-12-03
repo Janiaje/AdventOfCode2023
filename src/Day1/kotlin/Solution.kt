@@ -3,6 +3,24 @@ import java.io.File
 object Solution {
 
     private val inputFile = File("input.txt")
+    // private val inputFile = File("src/Day1/kotlin/input.txt")
+
+    private val text = inputFile.readLines()
+    // private val text = listOf(
+    //     "1abc2",
+    //     "pqr3stu8vwx",
+    //     "a1b2c3d4e5f",
+    //     "treb7uchet",
+    // )
+    // private val text = listOf(
+    //     "two1nine",
+    //     "eightwothree",
+    //     "abcone2threexyz",
+    //     "xtwone3four",
+    //     "4nineeightseven2",
+    //     "zoneight234",
+    //     "7pqrstsixteen",
+    // )
 
     private val firstDigitRegex = "^\\D*?(?<first>\\d)".toRegex()
     private val lastDigitRegex = "(?<last>\\d)\\D*$".toRegex()
@@ -16,21 +34,17 @@ object Solution {
         println("Part 2 => ${part2()}")
     }
 
-    private fun part1() = inputFile
-        .readLines()
-        .sumOf {
-            val firstDigit = firstDigitRegex.find(it)!!.groups["first"]!!.value
-            val lastDigit = lastDigitRegex.find(it)!!.groups["last"]!!.value
-            "$firstDigit$lastDigit".toInt()
-        }
+    private fun part1() = text.sumOf {
+        val firstDigit = firstDigitRegex.find(it)!!.groups["first"]!!.value
+        val lastDigit = lastDigitRegex.find(it)!!.groups["last"]!!.value
+        "$firstDigit$lastDigit".toInt()
+    }
 
-    private fun part2() = inputFile
-        .readLines()
-        .sumOf {
-            val firstDigit = firstDigitRegexPart2.find(it)!!.groups["first"]!!.value.parseToInt()
-            val lastDigit = lastDigitRegexPart2.find(it.reversed())!!.groups["last"]!!.value.reversed().parseToInt()
-            "$firstDigit$lastDigit".toInt()
-        }
+    private fun part2() = text.sumOf {
+        val firstDigit = firstDigitRegexPart2.find(it)!!.groups["first"]!!.value.parseToInt()
+        val lastDigit = lastDigitRegexPart2.find(it.reversed())!!.groups["last"]!!.value.reversed().parseToInt()
+        "$firstDigit$lastDigit".toInt()
+    }
 
     private fun String.parseToInt() = when (this) {
         "zero" -> 0
