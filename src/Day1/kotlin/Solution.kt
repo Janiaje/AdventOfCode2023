@@ -22,11 +22,11 @@ object Solution {
     //     "7pqrstsixteen",
     // )
 
-    private val firstDigitRegex = "^\\D*?(?<first>\\d)".toRegex()
-    private val lastDigitRegex = "(?<last>\\d)\\D*$".toRegex()
+    private val partOneFirstDigitRegex = "^\\D*?(?<first>\\d)".toRegex()
+    private val partOneLastDigitRegex = "(?<last>\\d)\\D*$".toRegex()
 
-    private val firstDigitRegexPart2 = "^\\D*?(?<first>\\d|one|two|three|four|five|six|seven|eight|nine)".toRegex()
-    private val lastDigitRegexPart2 = "^\\D*?(?<last>\\d|${"one|two|three|four|five|six|seven|eight|nine".reversed()})"
+    private val partTwoFirstDigitRegexPart = "^\\D*?(?<first>\\d|one|two|three|four|five|six|seven|eight|nine)".toRegex()
+    private val partTwoLastDigitRegexPart = "^\\D*?(?<last>\\d|${"one|two|three|four|five|six|seven|eight|nine".reversed()})"
         .toRegex()
 
     fun compute() {
@@ -35,14 +35,14 @@ object Solution {
     }
 
     private fun part1() = text.sumOf {
-        val firstDigit = firstDigitRegex.find(it)!!.groups["first"]!!.value
-        val lastDigit = lastDigitRegex.find(it)!!.groups["last"]!!.value
+        val firstDigit = partOneFirstDigitRegex.find(it)!!.groups["first"]!!.value
+        val lastDigit = partOneLastDigitRegex.find(it)!!.groups["last"]!!.value
         "$firstDigit$lastDigit".toInt()
     }
 
     private fun part2() = text.sumOf {
-        val firstDigit = firstDigitRegexPart2.find(it)!!.groups["first"]!!.value.parseToInt()
-        val lastDigit = lastDigitRegexPart2.find(it.reversed())!!.groups["last"]!!.value.reversed().parseToInt()
+        val firstDigit = partTwoFirstDigitRegexPart.find(it)!!.groups["first"]!!.value.parseToInt()
+        val lastDigit = partTwoLastDigitRegexPart.find(it.reversed())!!.groups["last"]!!.value.reversed().parseToInt()
         "$firstDigit$lastDigit".toInt()
     }
 
@@ -57,7 +57,7 @@ object Solution {
         "seven" -> 7
         "eight" -> 8
         "nine" -> 9
-        else -> toInt()
+        else -> this
     }
 }
 
