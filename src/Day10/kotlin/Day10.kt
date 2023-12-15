@@ -33,7 +33,7 @@ object Day10 {
     ) {
         fun getConnectedNeighboringTiles() = getNeighboringTiles().filter { it.isConnectingWith(this) }
 
-        private fun getNeighboringTiles(): List<Tile> = listOf(
+        fun getNeighboringTiles(): List<Tile> = listOf(
             { coordinate.goNorth() },
             { coordinate.goEast() },
             { coordinate.goSouth() },
@@ -54,38 +54,38 @@ object Day10 {
     ) {
         PipeVertical(
             '|',
-            { it, other -> it.x == other.x && abs(it.y - other.y) == 1 }
+            { current, other -> current.x == other.x && abs(current.y - other.y) == 1 }
         ),
         PipeHorizontal(
             '-',
-            { it, other -> it.y == other.y && abs(it.x - other.x) == 1 }
+            { current, other -> current.y == other.y && abs(current.x - other.x) == 1 }
         ),
         PipeNorthEast(
             'L',
-            { it, other ->
-                (it.x == other.x && it.y == (other.y + 1))
-                    || (it.y == other.y && it.x == (other.x - 1))
+            { current, other ->
+                (current.x == other.x && current.y == (other.y + 1))
+                    || (current.y == other.y && current.x == (other.x - 1))
             }
         ),
         PipeNorthWest(
             'J',
-            { it, other ->
-                (it.x == other.x && it.y == (other.y + 1))
-                    || (it.y == other.y && it.x == (other.x + 1))
+            { current, other ->
+                (current.x == other.x && current.y == (other.y + 1))
+                    || (current.y == other.y && current.x == (other.x + 1))
             }
         ),
         PipeSouthWest(
             '7',
-            { it, other ->
-                (it.x == other.x && it.y == (other.y - 1))
-                    || (it.y == other.y && it.x == (other.x + 1))
+            { current, other ->
+                (current.x == other.x && current.y == (other.y - 1))
+                    || (current.y == other.y && current.x == (other.x + 1))
             }
         ),
         PipeSouthEast(
             'F',
-            { it, other ->
-                (it.x == other.x && it.y == (other.y - 1))
-                    || (it.y == other.y && it.x == (other.x - 1))
+            { current, other ->
+                (current.x == other.x && current.y == (other.y - 1))
+                    || (current.y == other.y && current.x == (other.x - 1))
             }
         ),
         Ground(
@@ -155,6 +155,18 @@ object Day10 {
     }
 
     private fun part1(): Int {
+        val loop = getLoop()
+
+        if (loop.size % 2 == 1) {
+            throw Exception("The loop has 2 furthest tile!")
+        }
+
+        val furthestDistance = ((loop.drop(1).size - 1) / 2) + 1
+
+        return furthestDistance
+    }
+
+    private fun getLoop(): List<Tile> {
         val startingTile = findStartingTile()
         val randomDirectionFirst = startingTile.getConnectedNeighboringTiles().first()
 
@@ -166,17 +178,51 @@ object Day10 {
             currentTile = currentTile.getConnectedNeighboringTiles().first { it != loop[loop.lastIndex - 1] }
         }
 
-        if (loop.size % 2 == 1) {
-            throw Exception("The loop has 2 furthest tile!")
-        }
-
-        val furthestDistance = ((loop.drop(1).size - 1) / 2) + 1
-
-        return furthestDistance
+        return loop
     }
 
     private fun findStartingTile(): Tile = tiles.flatten().first { it.type == Start }
 
-    private fun part2() = text
+    enum class Direction{
+        LEFT, RIGHT;
+
+        operator fun not(): Direction {
+            return when (this) {
+                LEFT -> RIGHT
+                RIGHT -> LEFT
+            }
+        }
+    }
+
+    private fun part2(): Int {
+        val loop = getLoop()
+
+        val insideDirection : Direction = !getOutsideDirection()
+
+        val enclosedTiles = mutableSetOf<Tile>()
+
+        var addedTiles: List<Tile> = getLoopSide(insideDirection).filter{ !loop.contains(it) }
+        while (addedTiles.isNotEmpty()) {
+
+            enclosedTiles.addAll(addedTiles)
+
+            addedTiles = addedTiles.flatMap {
+                it.getNeighboringTiles()
+                    .filter { !loop.contains(it) }
+                    .filter { !enclosedTiles.contains(it) }
+            }
+
+        }
+
+        return enclosedTiles.size
+    }
+
+    /**
+     * The "outside" is defined as the region from where one can travel straight to the edge of the map
+     * without encountering any points/tiles belonging to the loop.
+     */
+    private fun getOutsideDirection(): Direction {
+        TODO("Not yet implemented")
+    }
 
 }
