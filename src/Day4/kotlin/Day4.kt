@@ -1,10 +1,13 @@
 import java.io.File
 import kotlin.math.pow
 
-object Solution {
+fun main() {
+    Day4.compute()
+}
 
-    private val inputFile = File("input.txt")
-    // private val inputFile = File("src/Day4/kotlin/input.txt")
+object Day4 {
+
+    private val inputFile = File("src/Day4/kotlin/input.txt")
 
     private val text = inputFile.readLines()
     // private val text = listOf(
@@ -82,8 +85,4 @@ object Solution {
         return scoreMap.values.sum()
     }
 
-}
-
-fun main() {
-    Solution.compute()
 }

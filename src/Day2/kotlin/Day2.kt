@@ -1,9 +1,12 @@
 import java.io.File
 
-object Solution {
+fun main() {
+    Day2.compute()
+}
 
-    private val inputFile = File("input.txt")
-    // private val inputFile = File("src/Day2/kotlin/input.txt")
+object Day2 {
+
+    private val inputFile = File("src/Day2/kotlin/input.txt")
 
     private val text = inputFile.readLines()
     // private val text = listOf(
@@ -87,8 +90,4 @@ object Solution {
 
         return Draw(red, green, blue)
     }
-}
-
-fun main() {
-    Solution.compute()
 }

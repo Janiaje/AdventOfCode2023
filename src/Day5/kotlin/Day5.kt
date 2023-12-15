@@ -1,8 +1,11 @@
 import java.io.File
 
-object Solution {
+fun main() {
+    Day5.compute()
+}
 
-    // private val inputFile = File("input.txt")
+object Day5 {
+
     private val inputFile = File("src/Day5/kotlin/input.txt")
 
     private val text = inputFile.readLines()
@@ -217,8 +220,4 @@ object Solution {
         return mappedValues.min()
     }
 
-}
-
-fun main() {
-    Solution.compute()
 }

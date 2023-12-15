@@ -4,10 +4,13 @@ import kotlin.math.floor
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-object Solution {
+fun main() {
+    Day6.compute()
+}
 
-    private val inputFile = File("input.txt")
-    // private val inputFile = File("src/Day6/kotlin/input.txt")
+object Day6 {
+
+    private val inputFile = File("src/Day6/kotlin/input.txt")
 
     private val text = inputFile.readLines()
     // private val text = listOf(
@@ -80,8 +83,4 @@ object Solution {
         .map { it.value.toLong() }
         .toList()
 
-}
-
-fun main() {
-    Solution.compute()
 }

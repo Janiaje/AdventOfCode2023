@@ -1,9 +1,12 @@
 import java.io.File
 
-object Solution {
+fun main() {
+    Day1.compute()
+}
 
-    private val inputFile = File("input.txt")
-    // private val inputFile = File("src/Day1/kotlin/input.txt")
+object Day1 {
+
+    private val inputFile = File("src/Day1/kotlin/input.txt")
 
     private val text = inputFile.readLines()
     // private val text = listOf(
@@ -59,8 +62,4 @@ object Solution {
         "nine" -> 9
         else -> this
     }
-}
-
-fun main() {
-    Solution.compute()
 }

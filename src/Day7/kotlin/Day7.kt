@@ -1,12 +1,15 @@
-import Solution.Card.C_J
+import Day7.Card.C_J
 import java.io.File
 import java.util.function.BiPredicate
 import java.util.function.Predicate
 
-object Solution {
+fun main() {
+    Day7.compute()
+}
 
-    private val inputFile = File("input.txt")
-    // private val inputFile = File("src/Day7/kotlin/input.txt")
+object Day7 {
+
+    private val inputFile = File("src/Day7/kotlin/input.txt")
 
     private val text = inputFile.readLines()
     // private val text = listOf(
@@ -17,24 +20,23 @@ object Solution {
     //     "QQQJA 483",
     // )
 
-    enum class Card(val symbol: String, val partOneValue: Int, val partTwoValue: Int) {
-        C_A("A", 14, 14),
-        C_K("K", 13, 13),
-        C_Q("Q", 12, 12),
-        C_J("J", 11, 1),
-        C_T("T", 10, 10),
-        C_9("9", 9, 9),
-        C_8("8", 8, 8),
-        C_7("7", 7, 7),
-        C_6("6", 6, 6),
-        C_5("5", 5, 5),
-        C_4("4", 4, 4),
-        C_3("3", 3, 3),
-        C_2("2", 2, 2)
+    enum class Card(val symbol: Char, val partOneValue: Int, val partTwoValue: Int) {
+        C_A('A', 14, 14),
+        C_K('K', 13, 13),
+        C_Q('Q', 12, 12),
+        C_J('J', 11, 1),
+        C_T('T', 10, 10),
+        C_9('9', 9, 9),
+        C_8('8', 8, 8),
+        C_7('7', 7, 7),
+        C_6('6', 6, 6),
+        C_5('5', 5, 5),
+        C_4('4', 4, 4),
+        C_3('3', 3, 3),
+        C_2('2', 2, 2)
     }
 
-    fun String.mapToCards() = this.split("")
-        .filter { it.isNotBlank() }
+    fun String.mapToCards() = this.toList()
         .map { character -> Card.entries.first { it.symbol == character } }
 
     enum class HandType(
@@ -204,8 +206,4 @@ object Solution {
         .mapIndexed { index, hand -> hand.bid * (index + 1) }
         .sum()
 
-}
-
-fun main() {
-    Solution.compute()
 }

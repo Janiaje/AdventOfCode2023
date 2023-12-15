@@ -2,10 +2,13 @@ import java.io.File
 import kotlin.math.max
 import kotlin.math.min
 
-object Solution {
+fun main() {
+    Day3.compute()
+}
 
-    private val inputFile = File("input.txt")
-    // private val inputFile = File("src/Day3/kotlin/input.txt")
+object Day3 {
+
+    private val inputFile = File("src/Day3/kotlin/input.txt")
 
     private val text = inputFile.readLines()
     // private val text = listOf(
@@ -127,8 +130,4 @@ object Solution {
         return adjacentNumbers
     }
 
-}
-
-fun main() {
-    Solution.compute()
 }

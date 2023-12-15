@@ -1,10 +1,13 @@
 import java.io.File
 import java.util.function.Predicate
 
-object Solution {
+fun main() {
+    Day8.compute()
+}
 
-    private val inputFile = File("input.txt")
-    // private val inputFile = File("src/Day8/kotlin/input.txt")
+object Day8 {
+
+    private val inputFile = File("src/Day8/kotlin/input.txt")
 
     private val text = inputFile.readLines()
     // private val text = listOf(
@@ -129,8 +132,4 @@ object Solution {
         return currentValue
     }
 
-}
-
-fun main() {
-    Solution.compute()
 }

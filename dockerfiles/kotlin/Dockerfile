@@ -19,7 +19,8 @@ ENV PATH=$PATH:/usr/local/kotlinc/bin
 # Set working directory
 WORKDIR /app
 
-COPY . /app
+COPY Solution.kt /app/Solution.kt
+COPY input.txt /app/src/Day0/kotlin/input.txt
 
 # Build your Kotlin code
 RUN kotlinc Solution.kt -include-runtime -d Solution.jar
