@@ -258,7 +258,7 @@ object Day10 {
                         if (loop.contains(it)) {
                             it.type.drawSymbol.toString()
                         } else if (enclosedTiles?.contains(it) == true) {
-                            "⬤"
+                            "●"
                         } else {
                             "·"
                             // " "
