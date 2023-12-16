@@ -7,6 +7,9 @@ import kotlin.math.abs
 
 fun main() {
     Day10.compute()
+    // Part 1 => 6725
+    // Part 2 =>
+    //     - Try #1: 381
 }
 
 object Day10 {
@@ -82,18 +85,22 @@ object Day10 {
 
     enum class TileType(
         val symbol: Char,
+        val drawSymbol: Char,
         val isConnecting: BiPredicate<Coordinate, Coordinate>
     ) {
         PipeVertical(
+            '|',
             '|',
             { current, other -> current.x == other.x && abs(current.y - other.y) == 1 }
         ),
         PipeHorizontal(
             '-',
+            '—',
             { current, other -> current.y == other.y && abs(current.x - other.x) == 1 }
         ),
         PipeNorthEast(
             'L',
+            '╰',
             { current, other ->
                 (current.x == other.x && current.y == (other.y + 1))
                     || (current.y == other.y && current.x == (other.x - 1))
@@ -101,6 +108,7 @@ object Day10 {
         ),
         PipeNorthWest(
             'J',
+            '╯',
             { current, other ->
                 (current.x == other.x && current.y == (other.y + 1))
                     || (current.y == other.y && current.x == (other.x + 1))
@@ -108,6 +116,7 @@ object Day10 {
         ),
         PipeSouthWest(
             '7',
+            '╮',
             { current, other ->
                 (current.x == other.x && current.y == (other.y - 1))
                     || (current.y == other.y && current.x == (other.x + 1))
@@ -115,6 +124,7 @@ object Day10 {
         ),
         PipeSouthEast(
             'F',
+            '╭',
             { current, other ->
                 (current.x == other.x && current.y == (other.y - 1))
                     || (current.y == other.y && current.x == (other.x - 1))
@@ -122,9 +132,11 @@ object Day10 {
         ),
         Ground(
             '.',
+            ' ',
             { _, _ -> false }
         ),
         Start(
+            'S',
             'S',
             { _, _ -> true }
         )
@@ -150,7 +162,7 @@ object Day10 {
         }
 
         private fun goSouth(): Coordinate {
-            if (y == maxY) {
+            if (y == map.maxY) {
                 throw LeavingMapException()
             }
 
@@ -166,63 +178,17 @@ object Day10 {
         }
 
         private fun goEast(): Coordinate {
-            if (x == maxX) {
+            if (x == map.maxX) {
                 throw LeavingMapException()
             }
 
             return Coordinate(x + 1, y)
         }
 
-        fun getTile() = tiles[y][x]
+        fun getTile() = map.tiles[y][x]
     }
 
     class LeavingMapException : Exception("Leaving the map!")
-
-    private val tiles = text.mapIndexed { y, row ->
-        row.toList()
-            .mapIndexed { x, tileCharacter ->
-                val type = TileType.entries.first { it.symbol == tileCharacter }
-                val coordinate = Coordinate(x, y)
-                Tile(type, coordinate)
-            }
-    }
-
-    private val maxY = tiles.lastIndex
-    private val maxX = tiles.first().lastIndex
-
-    fun compute() {
-        println("Part 1 => ${part1()}")
-        println("Part 2 => ${part2()}")
-    }
-
-    private fun part1(): Int {
-        val loop = getLoop()
-
-        if (loop.size % 2 == 1) {
-            throw Exception("The loop has 2 furthest tile!")
-        }
-
-        val furthestDistance = ((loop.drop(1).size - 1) / 2) + 1
-
-        return furthestDistance
-    }
-
-    private fun getLoop(): List<Tile> {
-        val startingTile = findStartingTile()
-        val randomDirectionFirst = startingTile.getConnectedNeighboringTiles().first()
-
-        val loop = mutableListOf(startingTile)
-
-        var currentTile: Tile = randomDirectionFirst
-        while (currentTile != startingTile) {
-            loop.add(currentTile)
-            currentTile = currentTile.getConnectedNeighboringTiles().first { it != loop[loop.lastIndex - 1] }
-        }
-
-        return loop
-    }
-
-    private fun findStartingTile(): Tile = tiles.flatten().first { it.type == Start }
 
     enum class CardinalDirection(private val index: Int) {
         NORTH(0),
@@ -264,6 +230,77 @@ object Day10 {
         }
     }
 
+    class Map(inputText: List<String>) {
+        val tiles: List<List<Tile>> = inputText.mapIndexed { y, row ->
+            row.toList()
+                .mapIndexed { x, tileCharacter ->
+                    val type = TileType.entries.first { it.symbol == tileCharacter }
+                    val coordinate = Coordinate(x, y)
+                    Tile(type, coordinate)
+                }
+        }
+
+        val maxY = tiles.lastIndex
+        val maxX = tiles.first().lastIndex
+
+        fun findStartingTile(): Tile = tiles.flatten().first { it.type == Start }
+
+        fun draw() {
+            tiles.forEach { println(it.joinToString { it.type.drawSymbol.toString() }) }
+        }
+
+        fun draw(loop: List<Tile>, enclosedTiles: Set<Tile>? = null) {
+            tiles.forEach { row ->
+                println(
+                    row.joinToString("") {
+                        if (loop.contains(it)) {
+                            it.type.drawSymbol.toString()
+                        } else if (enclosedTiles?.contains(it) == true) {
+                            "█"
+                        } else {
+                            "·"
+                            // " "
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    private val map = Map(text)
+
+    fun compute() {
+        println("Part 1 => ${part1()}")
+        println("Part 2 => ${part2()}")
+    }
+
+    private fun part1(): Int {
+        val loop = getLoop()
+
+        if (loop.size % 2 == 1) {
+            throw Exception("The loop has 2 furthest tile!")
+        }
+
+        val furthestDistance = ((loop.drop(1).size - 1) / 2) + 1
+
+        return furthestDistance
+    }
+
+    private fun getLoop(): List<Tile> {
+        val startingTile = map.findStartingTile()
+        val randomDirectionFirst = startingTile.getConnectedNeighboringTiles().first()
+
+        val loop = mutableListOf(startingTile)
+
+        var currentTile: Tile = randomDirectionFirst
+        while (currentTile != startingTile) {
+            loop.add(currentTile)
+            currentTile = currentTile.getConnectedNeighboringTiles().first { it != loop[loop.lastIndex - 1] }
+        }
+
+        return loop
+    }
+
     private fun part2(): Int {
         val loop = getLoop()
 
@@ -283,6 +320,8 @@ object Day10 {
             }
 
         }
+
+        // map.draw(loop, enclosedTiles)
 
         return enclosedTiles.size
     }
