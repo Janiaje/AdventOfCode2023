@@ -123,10 +123,11 @@ Find the single giant loop starting at `S`. **How many steps along the loop does
 
 --- Part Two ---
 
-You quickly reach the farthest point of the loop, but the animal never emerges. Maybe its nest is within the area enclosed by the loop?
+You quickly reach the farthest point of the loop, but the animal never emerges. Maybe its nest is **within the area enclosed by the loop**?
 
 To determine whether it's even worth taking the time to search for such a nest, you should calculate how many tiles are contained within the loop. For example:
 
+```
 ...........
 .S-------7.
 .|F-----7|.
@@ -136,8 +137,11 @@ To determine whether it's even worth taking the time to search for such a nest, 
 .|..|.|..|.
 .L--J.L--J.
 ...........
-The above loop encloses merely four tiles - the two pairs of . in the southwest and southeast (marked I below). The middle . tiles (marked O below) are not in the loop. Here is the same loop again with those regions marked:
+```
 
+The above loop encloses merely **four tiles** - the two pairs of `.` in the southwest and southeast (marked `I` below). The middle `.` tiles (marked `O` below) are **not** in the loop. Here is the same loop again with those regions marked:
+
+```
 ...........
 .S-------7.
 .|F-----7|.
@@ -147,8 +151,11 @@ The above loop encloses merely four tiles - the two pairs of . in the southwest 
 .|II|O|II|.
 .L--JOL--J.
 .....O.....
-In fact, there doesn't even need to be a full tile path to the outside for tiles to count as outside the loop - squeezing between pipes is also allowed! Here, I is still within the loop and O is still outside the loop:
+```
 
+In fact, there doesn't even need to be a full tile path to the outside for tiles to count as outside the loop - squeezing between pipes is also allowed! Here, `I` is still within the loop and `O` is still outside the loop:
+
+```
 ..........
 .S------7.
 .|F----7|.
@@ -158,10 +165,13 @@ In fact, there doesn't even need to be a full tile path to the outside for tiles
 .|II||II|.
 .L--JL--J.
 ..........
-In both of the above examples, 4 tiles are enclosed by the loop.
+```
+
+In both of the above examples, `4` tiles are enclosed by the loop.
 
 Here's a larger example:
 
+```
 .F----7F7F7F7F-7....
 .|F--7||||||||FJ....
 .||.FJ||||||||L7....
@@ -172,8 +182,11 @@ L--J.L7...LJS7F-7L7.
 .....|FJLJ|FJ|F7|.LJ
 ....FJL-7.||.||||...
 ....L---J.LJ.LJLJ...
-The above sketch has many random bits of ground, some of which are in the loop (I) and some of which are outside it (O):
+```
 
+The above sketch has many random bits of ground, some of which are in the loop (`I`) and some of which are outside it (`O`):
+
+```
 OF----7F7F7F7F-7OOOO
 O|F--7||||||||FJOOOO
 O||OFJ||||||||L7OOOO
@@ -184,10 +197,13 @@ OOOOL7IF7||L7|IL7L7|
 OOOOO|FJLJ|FJ|F7|OLJ
 OOOOFJL-7O||O||||OOO
 OOOOL---JOLJOLJLJOOO
-In this larger example, 8 tiles are enclosed by the loop.
+```
+
+In this larger example, `8` tiles are enclosed by the loop.
 
 Any tile that isn't part of the main loop can count as being enclosed by the loop. Here's another example with many bits of junk pipe lying around that aren't connected to the main loop at all:
 
+```
 FF7FSF7F7F7F7F7F---7
 L|LJ||||||||||||F--J
 FL-7LJLJ||||||LJL-77
@@ -198,8 +214,11 @@ L---JF-JLJ.||-FJLJJ7
 7-L-JL7||F7|L7F-7F7|
 L.L7LFJ|||||FJL7||LJ
 L7JLJL-JLJLJL--JLJ.L
-Here are just the tiles that are enclosed by the loop marked with I:
+```
 
+Here are just the tiles that are **enclosed by the loop** marked with I:
+
+```
 FF7FSF7F7F7F7F7F---7
 L|LJ||||||||||||F--J
 FL-7LJLJ||||||LJL-77
@@ -210,6 +229,8 @@ L---JF-JLJIIIIFJLJJ7
 7-L-JL7||F7|L7F-7F7|
 L.L7LFJ|||||FJL7||LJ
 L7JLJL-JLJLJL--JLJ.L
-In this last example, 10 tiles are enclosed by the loop.
+```
 
-Figure out whether you have time to search for the nest by calculating the area within the loop. How many tiles are enclosed by the loop?
+In this last example, `10` tiles are enclosed by the loop.
+
+Figure out whether you have time to search for the nest by calculating the area within the loop. **How many tiles are enclosed by the loop?**
