@@ -162,7 +162,7 @@ object Day10 {
         }
 
         private fun goSouth(): Coordinate {
-            if (y == map.maxY) {
+            if (y == Map.maxY) {
                 throw LeavingMapException()
             }
 
@@ -178,14 +178,14 @@ object Day10 {
         }
 
         private fun goEast(): Coordinate {
-            if (x == map.maxX) {
+            if (x == Map.maxX) {
                 throw LeavingMapException()
             }
 
             return Coordinate(x + 1, y)
         }
 
-        fun getTile() = map.tiles[y][x]
+        fun getTile() = Map.tiles[y][x]
     }
 
     class LeavingMapException : Exception("Leaving the map!")
@@ -230,8 +230,8 @@ object Day10 {
         }
     }
 
-    class Map(inputText: List<String>) {
-        val tiles: List<List<Tile>> = inputText.mapIndexed { y, row ->
+    object Map {
+        val tiles: List<List<Tile>> = text.mapIndexed { y, row ->
             row.toList()
                 .mapIndexed { x, tileCharacter ->
                     val type = TileType.entries.first { it.symbol == tileCharacter }
@@ -267,8 +267,6 @@ object Day10 {
         }
     }
 
-    private val map = Map(text)
-
     fun compute() {
         println("Part 1 => ${part1()}")
         println("Part 2 => ${part2()}")
@@ -287,7 +285,7 @@ object Day10 {
     }
 
     private fun getLoop(): List<Tile> {
-        val startingTile = map.findStartingTile()
+        val startingTile = Map.findStartingTile()
         val randomDirectionFirst = startingTile.getConnectedNeighboringTiles().first()
 
         val loop = mutableListOf(startingTile)
@@ -321,7 +319,7 @@ object Day10 {
 
         }
 
-        // map.draw(loop, enclosedTiles)
+        // Map.draw(loop, enclosedTiles)
 
         return enclosedTiles.size
     }
