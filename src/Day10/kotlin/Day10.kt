@@ -250,13 +250,15 @@ object Day10 {
         }
 
         fun draw(loop: List<Tile>, enclosedTiles: Set<Tile>? = null) {
+            println()
+
             tiles.forEach { row ->
                 println(
                     row.joinToString("") {
                         if (loop.contains(it)) {
                             it.type.drawSymbol.toString()
                         } else if (enclosedTiles?.contains(it) == true) {
-                            "█"
+                            "⬤"
                         } else {
                             "·"
                             // " "
@@ -264,6 +266,8 @@ object Day10 {
                     }
                 )
             }
+
+            println()
         }
     }
 
@@ -319,7 +323,7 @@ object Day10 {
 
         }
 
-        // Map.draw(loop, enclosedTiles)
+        Map.draw(loop, enclosedTiles)
 
         return enclosedTiles.size
     }
