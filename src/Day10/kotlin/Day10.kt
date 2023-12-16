@@ -1,9 +1,9 @@
 import Day10.CardinalDirection.*
+import Day10.CardinalDirection.Companion.computeDirection
 import Day10.Direction.LEFT
+import Day10.Direction.RIGHT
 import Day10.TileType.Start
 import java.io.File
-import java.util.function.BiPredicate
-import kotlin.math.abs
 
 fun main() {
     Day10.compute()
@@ -74,71 +74,104 @@ object Day10 {
         fun getConnectedNeighboringTiles() = getNeighboringTiles().filter { it.isConnectingWith(this) }
 
         fun getNeighboringTiles(): List<Tile> = CardinalDirection.entries
-            .mapNotNull { runCatching { coordinate.go(it) }.getOrNull() }
+            .mapNotNull { coordinate.goSafe(it) }
             .map { it.getTile() }
 
         private fun isConnectingWith(tile: Tile): Boolean {
-            return this.type.isConnecting.test(this.coordinate, tile.coordinate)
-                && tile.type.isConnecting.test(tile.coordinate, this.coordinate)
+            return this.type.connectingDirections.contains(computeDirection(this.coordinate, tile.coordinate))
+                && tile.type.connectingDirections.contains(computeDirection(tile.coordinate, this.coordinate))
         }
     }
 
     enum class TileType(
         val symbol: Char,
         val drawSymbol: Char,
-        val isConnecting: BiPredicate<Coordinate, Coordinate>
+        val connectingDirections: List<CardinalDirection>,
+        val getSideCoordinates: (Coordinate, CardinalDirection, Direction) -> List<Coordinate>
     ) {
         PipeVertical(
             '|',
             '|',
-            { current, other -> current.x == other.x && abs(current.y - other.y) == 1 }
+            listOf(NORTH, SOUTH),
+            { current, travelingDirection, side ->
+                if (travelingDirection == NORTH && side == LEFT || travelingDirection == SOUTH && side == RIGHT) {
+                    listOfNotNull(current.goSafe(WEST))
+                } else {
+                    listOfNotNull(current.goSafe(EAST))
+                }
+            }
         ),
         PipeHorizontal(
             '-',
             '—',
-            { current, other -> current.y == other.y && abs(current.x - other.x) == 1 }
+            listOf(EAST, WEST),
+            { current, travelingDirection, side ->
+                if (travelingDirection == EAST && side == LEFT || travelingDirection == WEST && side == RIGHT) {
+                    listOfNotNull(current.goSafe(NORTH))
+                } else {
+                    listOfNotNull(current.goSafe(SOUTH))
+                }
+            }
         ),
         PipeNorthEast(
             'L',
             '╰',
-            { current, other ->
-                (current.x == other.x && current.y == (other.y + 1))
-                    || (current.y == other.y && current.x == (other.x - 1))
+            listOf(NORTH, EAST),
+            { current, travelingDirection, side ->
+                if (travelingDirection == NORTH && side == LEFT || travelingDirection == EAST && side == RIGHT) {
+                    listOfNotNull(current.goSafe(WEST), current.goSafe(SOUTH))
+                } else {
+                    listOf()
+                }
             }
         ),
         PipeNorthWest(
             'J',
             '╯',
-            { current, other ->
-                (current.x == other.x && current.y == (other.y + 1))
-                    || (current.y == other.y && current.x == (other.x + 1))
+            listOf(NORTH, WEST),
+            { current, travelingDirection, side ->
+                if (travelingDirection == NORTH && side == RIGHT || travelingDirection == WEST && side == LEFT) {
+                    listOfNotNull(current.goSafe(EAST), current.goSafe(SOUTH))
+                } else {
+                    listOf()
+                }
             }
         ),
         PipeSouthWest(
             '7',
             '╮',
-            { current, other ->
-                (current.x == other.x && current.y == (other.y - 1))
-                    || (current.y == other.y && current.x == (other.x + 1))
+            listOf(SOUTH, WEST),
+            { current, travelingDirection, side ->
+                if (travelingDirection == SOUTH && side == LEFT || travelingDirection == WEST && side == RIGHT) {
+                    listOfNotNull(current.goSafe(NORTH), current.goSafe(EAST))
+                } else {
+                    listOf()
+                }
             }
         ),
         PipeSouthEast(
             'F',
             '╭',
-            { current, other ->
-                (current.x == other.x && current.y == (other.y - 1))
-                    || (current.y == other.y && current.x == (other.x - 1))
+            listOf(SOUTH, EAST),
+            { current, travelingDirection, side ->
+                if (travelingDirection == SOUTH && side == RIGHT || travelingDirection == EAST && side == LEFT) {
+                    listOfNotNull(current.goSafe(NORTH), current.goSafe(WEST))
+                } else {
+                    listOf()
+                }
             }
         ),
         Ground(
             '.',
             ' ',
-            { _, _ -> false }
+            listOf(),
+            { _, _, _ -> throw Exception("N/A") }
         ),
         Start(
             'S',
             'S',
-            { _, _ -> true }
+            CardinalDirection.entries,
+            { _, _, _ -> throw Exception("N/A") }
         )
     }
 
@@ -152,6 +185,8 @@ object Day10 {
             EAST -> goEast()
             WEST -> goWest()
         }
+
+        fun goSafe(direction: CardinalDirection) = runCatching { go(direction) }.getOrNull()
 
         private fun goNorth(): Coordinate {
             if (y == 0) {
@@ -231,13 +266,14 @@ object Day10 {
     }
 
     object Map {
-        val tiles: List<List<Tile>> = text.mapIndexed { y, row ->
+        val tiles: List<MutableList<Tile>> = text.mapIndexed { y, row ->
             row.toList()
                 .mapIndexed { x, tileCharacter ->
                     val type = TileType.entries.first { it.symbol == tileCharacter }
                     val coordinate = Coordinate(x, y)
                     Tile(type, coordinate)
                 }
+                .toMutableList()
         }
 
         val maxY = tiles.lastIndex
@@ -245,12 +281,29 @@ object Day10 {
 
         fun findStartingTile(): Tile = tiles.flatten().first { it.type == Start }
 
+        fun updateStartingPoint(loop: List<Coordinate>) {
+            val start = loop.first()
+            val second = loop.drop(1).first()
+            val last = loop.last()
+
+            val startToFirstDirection = computeDirection(start, second)
+            val startToLastDirection = computeDirection(start, last)
+
+            val connectingDirections = setOf(startToFirstDirection, startToLastDirection)
+
+            val startingTileType = TileType.entries.first {
+                it.connectingDirections.intersect(connectingDirections.toSet()).size == 2
+            }
+
+            tiles[start.y][start.x] = Tile(startingTileType, start)
+        }
+
         fun draw() {
             tiles.forEach { println(it.joinToString { it.type.drawSymbol.toString() }) }
         }
 
         fun draw(loop: List<Tile>, enclosedTiles: Set<Tile>? = null) {
-            println()
+            println("=".repeat(maxX + 1))
 
             tiles.forEach { row ->
                 println(
@@ -261,13 +314,12 @@ object Day10 {
                             "●"
                         } else {
                             "·"
-                            // " "
                         }
                     }
                 )
             }
 
-            println()
+            println("=".repeat(maxX + 1))
         }
     }
 
@@ -305,10 +357,13 @@ object Day10 {
 
     private fun part2(): Int {
         val loop = getLoop()
+        val loopCoordinates = loop.map { it.coordinate }
 
-        val insideDirection: Direction = !getOutsideDirection(loop.map { it.coordinate })
+        val insideDirection: Direction = !getOutsideDirection(loopCoordinates)
 
         val enclosedTiles = mutableSetOf<Tile>()
+
+        Map.updateStartingPoint(loopCoordinates)
 
         var addedTiles: List<Tile> = getLoopSide(loop, insideDirection).filter { !loop.contains(it) }
         while (addedTiles.isNotEmpty()) {
@@ -333,15 +388,9 @@ object Day10 {
             .toMutableList()
             .also { it.add(it.first()) }
             .zipWithNext()
-            .mapNotNull { (current, next) ->
+            .flatMap { (current, next) ->
                 val loopDirection = CardinalDirection.computeDirection(current, next)
-                val cardinalDirection = loopDirection.turn(insideDirection)
-
-                try {
-                    current.go(cardinalDirection)
-                } catch (e: LeavingMapException) {
-                    null
-                }
+                current.getTile().type.getSideCoordinates(current, loopDirection, insideDirection)
             }
             .map { it.getTile() }
 
